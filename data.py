@@ -1,5 +1,8 @@
 import json
 
+import torch
+import torchaudio
+
 AUDIO_DIR = "../data/LJSpeech-1.1/wavs_16khz/"
 HU_AUDIO_MAP_FILE = "../speech-resynthesis/datasets/LJSpeech/hubert100/train.txt"
 
