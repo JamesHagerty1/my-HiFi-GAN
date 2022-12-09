@@ -8,8 +8,8 @@ from generator_model import Generator
 def main():
     G = Generator()
 
-    hidden_units = torch.ones(1, 1, 500) # (batch_size, in_channels, sequence_len)
-    G(hidden_units)
+    discrete_units = torch.ones(1, 42, dtype=torch.long) # (batch_size, sequence_len)
+    G(discrete_units)
 
 
 if __name__ == "__main__":
