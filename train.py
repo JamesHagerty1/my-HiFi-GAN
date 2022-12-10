@@ -1,3 +1,4 @@
+import itertools
 import json
 
 import torch
@@ -5,7 +6,7 @@ from torch.utils.data import DataLoader
 
 from data import dataloader_init
 from generator_model import Generator
-from discriminator_models import MultiPeriodDiscriminator, MultiScaleDiscriminator
+from discriminator_models import MultiPeriodDiscriminator, MultiScaleDiscriminator, discriminator_loss
 from utils import AttrDict, mel_spectrogram
 
 
@@ -42,7 +43,21 @@ def main():
             y_g_hat_mel = mel_spectrogram(y_g_hat.squeeze(1), h.n_fft, h.num_mels, h.sampling_rate, h.hop_size, h.win_size,
                                           h.fmin, h.fmax_for_loss)
 
-            # optim_d.zero_grad()
+            # Discriminators' losses
+            optim_d.zero_grad()
+
+            y_df_hat_r, y_df_hat_g, _, _ = mpd(y, y_g_hat.detach())
+            loss_disc_f, losses_disc_f_r, losses_disc_f_g = discriminator_loss(y_df_hat_r, y_df_hat_g)
+
+            y_ds_hat_r, y_ds_hat_g, _, _ = msd(y, y_g_hat.detach())
+            loss_disc_s, losses_disc_s_r, losses_disc_s_g = discriminator_loss(y_ds_hat_r, y_ds_hat_g)
+
+            loss_disc_all = loss_disc_s + loss_disc_f
+
+            loss_disc_all.backward()
+            optim_d.step()
+
+            
          
             # if (i == 100):
             #     torch.save({'generator': generator.state_dict()},
