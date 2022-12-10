@@ -35,6 +35,10 @@ def main():
             y_g_hat = generator(x)
             print(y_g_hat.shape)
          
+            if (True):
+                torch.save({'generator': generator.state_dict()},
+                           f"checkpoints/testG{i}")
+
             break
         break    
     
