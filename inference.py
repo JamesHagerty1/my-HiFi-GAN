@@ -12,6 +12,7 @@ from speech_resynthesis_data import get_speech_resynthesis_data
 
 
 CHECKPOINT_FILE = "checkpoints/testG0"
+GENERATED_FILE_DIR = "generated_files/"
 
 
 def main():
@@ -44,7 +45,8 @@ def main():
             audio = audio * MAX_WAV_VALUE
             audio = audio.cpu().numpy().astype('int16')
 
-            write(audio_file.split("/")[-1], h.sampling_rate, audio)
+            write(GENERATED_FILE_DIR + audio_file.split("/")[-1], 
+                  h.sampling_rate, audio)
 
 
 if __name__ == "__main__":
