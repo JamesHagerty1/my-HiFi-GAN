@@ -5,7 +5,8 @@ from torch.utils.data import DataLoader
 
 from data import dataloader_init
 from generator_model import Generator
-from utils import AttrDict
+from discriminator_models import MultiPeriodDiscriminator, MultiScaleDiscriminator
+from utils import AttrDict, mel_spectrogram
 
 
 EPOCHS = 3100
@@ -22,6 +23,11 @@ def main():
 
     dataloader = dataloader_init(h)
     generator = Generator(h).to(device)
+    mpd = MultiPeriodDiscriminator().to(device)
+    msd = MultiScaleDiscriminator().to(device)
+    optim_g = torch.optim.AdamW(generator.parameters(), h.learning_rate, betas=[h.adam_b1, h.adam_b2])
+    optim_d = torch.optim.AdamW(itertools.chain(msd.parameters(), mpd.parameters()), h.learning_rate,
+                                betas=[h.adam_b1, h.adam_b2])
 
     for epoch in range(EPOCHS):
         for i, batch in enumerate(dataloader):
@@ -33,11 +39,14 @@ def main():
             y = y.unsqueeze(1)
 
             y_g_hat = generator(x)
-            print(y_g_hat.shape)
+            y_g_hat_mel = mel_spectrogram(y_g_hat.squeeze(1), h.n_fft, h.num_mels, h.sampling_rate, h.hop_size, h.win_size,
+                                          h.fmin, h.fmax_for_loss)
+
+            # optim_d.zero_grad()
          
-            if (True):
-                torch.save({'generator': generator.state_dict()},
-                           f"checkpoints/testG{i}")
+            # if (i == 100):
+            #     torch.save({'generator': generator.state_dict()},
+            #                f"checkpoints/testG{i}")
 
             break
         break    
