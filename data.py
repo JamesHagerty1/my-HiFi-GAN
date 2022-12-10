@@ -43,15 +43,15 @@ class HifiGanDataset(Dataset):
     def __init__(self, audio_file_list, discrete_units_list, config):
         self.audio_file_list = audio_file_list
         self.discrete_units_list = discrete_units_list
-        self.sampling_rate = config["sampling_rate"]
-        self.code_hop_size = config["code_hop_size"]
-        self.segment_size = config["segment_size"]
-        self.n_fft = config["n_fft"]
-        self.num_mels = config["num_mels"]
-        self.hop_size = config["hop_size"]
-        self.win_size = config["win_size"]
-        self.fmin = config["fmin"]
-        self.fmax_for_loss = config["fmax_for_loss"]
+        self.sampling_rate = config.sampling_rate
+        self.code_hop_size = config.code_hop_size
+        self.segment_size = config.segment_size
+        self.n_fft = config.n_fft
+        self.num_mels = config.num_mels
+        self.hop_size = config.hop_size
+        self.win_size = config.win_size
+        self.fmin = config.fmin
+        self.fmax_for_loss = config.fmax_for_loss
 
     # From github.com/facebookresearch/speech-resynthesis/blob/main/dataset.py
     def _sample_interval(self, seqs, seq_len=None):
@@ -115,6 +115,6 @@ def dataloader_init(config):
     audio_file_list, discrete_units_list, _ = \
         get_speech_resynthesis_data(TRAINING_SAMPLE_COUNT)
     dataset = HifiGanDataset(audio_file_list, discrete_units_list, config)
-    dataloader = DataLoader(dataset, num_workers=config["num_workers"], 
-                            batch_size=config["batch_size"])
+    dataloader = DataLoader(dataset, num_workers=config.num_workers, 
+                            batch_size=config.batch_size)
     return dataloader

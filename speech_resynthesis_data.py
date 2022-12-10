@@ -33,9 +33,3 @@ def get_speech_resynthesis_data(N):
             duration_list.append(duration)
 
     return audio_file_list, discrete_units_list, duration_list
-
-
-# fb speech resyn uses these for discrete units
-# codes += [torch.LongTensor(
-#     [int(x) for x in sample[k].split(' ')]
-# ).numpy()]

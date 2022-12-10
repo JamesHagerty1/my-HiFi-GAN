@@ -6,10 +6,7 @@ from generator_model import Generator
 
 
 def main():
-    G = Generator()
-
-    discrete_units = torch.ones(1, 42, dtype=torch.long) # (batch_size, sequence_len)
-    G(discrete_units)
+    pass
 
 
 if __name__ == "__main__":
