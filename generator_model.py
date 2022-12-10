@@ -127,3 +127,23 @@ class Generator(torch.nn.Module):
             l.remove_weight_norm()
         remove_weight_norm(self.conv_pre)
         remove_weight_norm(self.conv_post)
+
+
+def feature_loss(fmap_r, fmap_g):
+    loss = 0
+    for dr, dg in zip(fmap_r, fmap_g):
+        for rl, gl in zip(dr, dg):
+            loss += torch.mean(torch.abs(rl - gl))
+
+    return loss*2
+
+
+def generator_loss(disc_outputs):
+    loss = 0
+    gen_losses = []
+    for dg in disc_outputs:
+        l = torch.mean((1-dg)**2)
+        gen_losses.append(l)
+        loss += l
+
+    return loss, gen_losses

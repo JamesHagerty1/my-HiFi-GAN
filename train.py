@@ -3,9 +3,10 @@ import json
 
 import torch
 from torch.utils.data import DataLoader
+import torch.nn.functional as F
 
 from data import dataloader_init
-from generator_model import Generator
+from generator_model import Generator, feature_loss, generator_loss
 from discriminator_models import MultiPeriodDiscriminator, MultiScaleDiscriminator, discriminator_loss
 from utils import AttrDict, mel_spectrogram
 
@@ -30,6 +31,7 @@ def main():
     optim_d = torch.optim.AdamW(itertools.chain(msd.parameters(), mpd.parameters()), h.learning_rate,
                                 betas=[h.adam_b1, h.adam_b2])
 
+    steps = 0
     for epoch in range(EPOCHS):
         for i, batch in enumerate(dataloader):
             x, y, _, y_mel = batch
@@ -57,11 +59,27 @@ def main():
             loss_disc_all.backward()
             optim_d.step()
 
-            
+            # Generator loss
+            optim_g.zero_grad()
+
+            loss_mel = F.l1_loss(y_mel, y_g_hat_mel) * 45
+
+            y_df_hat_r, y_df_hat_g, fmap_f_r, fmap_f_g = mpd(y, y_g_hat)
+            y_ds_hat_r, y_ds_hat_g, fmap_s_r, fmap_s_g = msd(y, y_g_hat)
+            loss_fm_f = feature_loss(fmap_f_r, fmap_f_g)
+            loss_fm_s = feature_loss(fmap_s_r, fmap_s_g)
+            loss_gen_f, losses_gen_f = generator_loss(y_df_hat_g)
+            loss_gen_s, losses_gen_s = generator_loss(y_ds_hat_g)
+            loss_gen_all = loss_gen_s + loss_gen_f + loss_fm_s + loss_fm_f + loss_mel
+
+            loss_gen_all.backward()
+            optim_g.step()  
          
             # if (i == 100):
             #     torch.save({'generator': generator.state_dict()},
             #                f"checkpoints/testG{i}")
+
+            steps += 1
 
             break
         break    
