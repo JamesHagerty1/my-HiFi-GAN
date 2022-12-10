@@ -3,6 +3,8 @@ import json
 from torch.utils.data import DataLoader
 
 from data import dataloader_init
+from generator_model import Generator
+
 
 def main():
     with open("hubert100_lut.json") as f:
@@ -11,9 +13,14 @@ def main():
 
     dataloader = dataloader_init(config)
 
-    # for i, batch in enumerate(dataloader):
-    #     print(batch)
+    generator = Generator(config)
 
+    for i, batch in enumerate(dataloader):
+        x, y, _, y_mel = batch
+        
+        y_g_hat = generator(x)
+
+        break
 
 
 if __name__ == "__main__":

@@ -10,9 +10,8 @@ from torch.utils.data import Dataset, DataLoader
 from speech_resynthesis_data import get_speech_resynthesis_data
 
 
+TRAINING_SAMPLE_COUNT = 100
 MAX_WAV_VALUE = 32768.0
-
-
 
 
 # From github.com/facebookresearch/speech-resynthesis/blob/main/dataset.py
@@ -113,13 +112,9 @@ class HifiGanDataset(Dataset):
 
 
 def dataloader_init(config):
-    audio_file_list, discrete_units_list, _ = get_speech_resynthesis_data(16)
+    audio_file_list, discrete_units_list, _ = \
+        get_speech_resynthesis_data(TRAINING_SAMPLE_COUNT)
     dataset = HifiGanDataset(audio_file_list, discrete_units_list, config)
-
-    dataset.__getitem__(0)
-    dataset.__getitem__(1)
-
-    dataloader = DataLoader(dataset, 
-                            num_workers=config["num_workers"], 
+    dataloader = DataLoader(dataset, num_workers=config["num_workers"], 
                             batch_size=config["batch_size"])
     return dataloader
