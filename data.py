@@ -1,34 +1,42 @@
-import json
-
-import torch.utils.data
+import soundfile
+from torch.utils.data import Dataset, DataLoader
 
 from speech_resynthesis_data import get_speech_resynthesis_data
 
 
-CONFIG_FILE = "config_v3.json"
-
-
-class HifiGanDataset(torch.utils.data.Dataset):
+class HifiGanDataset(Dataset):
     def __init__(self,
-                 audio_file_list):
+                 audio_file_list,
+                 discrete_units_list,
+                 config):
         self.audio_file_list = audio_file_list
+        self.discrete_units_list = discrete_units_list
+        self.sampling_rate = config["sampling_rate"]
 
     def __getitem__(self, index):
-        return None
+        audio_file = self.audio_file_list[index]
+        print(audio_file)
+
+        audio, sampling_rate = soundfile.read(audio_file, dtype="int16")
+        if sampling_rate != self.sampling_rate:
+            raise ValueError("Incorrect sampling_rate")
+        
+        print("audio shape ", audio.shape)
+
+        return 
 
     def __len__(self):
         return len(self.audio_file_list)
 
 
-def main():
-    with open(CONFIG_FILE) as f:
-        data = f.read()
-    config = json.loads(data)
+def dataloader_init(config):
+    audio_file_list, discrete_units_list, _ = get_speech_resynthesis_data(16)
+    dataset = HifiGanDataset(audio_file_list, discrete_units_list, config)
 
-    audio_file_list, discrete_units_list, _ = get_speech_resynthesis_data(3)
+    dataset.__getitem__(0)
+    dataset.__getitem__(1)
 
-    dataset = HifiGanDataset(audio_file_list)
-
-
-if __name__ == "__main__":
-    main()
+    dataloader = DataLoader(dataset, 
+                            num_workers=config["num_workers"], 
+                            batch_size=config["batch_size"])
+    return dataloader
