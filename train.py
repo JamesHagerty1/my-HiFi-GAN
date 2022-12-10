@@ -75,15 +75,13 @@ def main():
             loss_gen_all.backward()
             optim_g.step()  
          
-            # if (i == 100):
-            #     torch.save({'generator': generator.state_dict()},
-            #                f"checkpoints/testG{i}")
+            print(steps)
+            if (steps == 100):
+                torch.save({'generator': generator.state_dict()},
+                           f"checkpoints/testG{steps}")
 
             steps += 1
 
-            break
-        break    
-    
 
 if __name__ == "__main__":
     main()

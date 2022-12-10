@@ -11,7 +11,7 @@ from utils import AttrDict, mel_spectrogram, MAX_WAV_VALUE
 from speech_resynthesis_data import get_speech_resynthesis_data
 
 
-CHECKPOINT_FILE = "checkpoints/testG0"
+CHECKPOINT_FILE = "checkpoints/testG2"
 GENERATED_FILE_DIR = "generated_files/"
 
 
