@@ -9,7 +9,7 @@ class Generator(torch.nn.Module):
         super(Generator, self).__init__()
 
         # Embedding(K_discrete_units, embedding_dim)
-        # x ()
+        # x (batch_size, sequence_len) -> (batch_size, sequence_len, embedding_dim)
         self.lookup_table = nn.Embedding(100, 128)
 
         # Conv1d(in_channels, out_channels, kernel_size, stride, padding)
