@@ -4,6 +4,9 @@ from librosa.filters import mel as librosa_mel_fn
 import torch
 
 
+MAX_WAV_VALUE = 32768.0
+
+
 class AttrDict(dict):
     def __init__(self, *args, **kwargs):
         super(AttrDict, self).__init__(*args, **kwargs)

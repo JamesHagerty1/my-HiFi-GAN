@@ -7,11 +7,10 @@ import torch
 from torch.utils.data import Dataset, DataLoader
 
 from speech_resynthesis_data import get_speech_resynthesis_data
-from utils import mel_spectrogram
+from utils import mel_spectrogram, MAX_WAV_VALUE
 
 
 TRAINING_SAMPLE_COUNT = 100
-MAX_WAV_VALUE = 32768.0
 
 
 class HifiGanDataset(Dataset):
